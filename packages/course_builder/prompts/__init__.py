@@ -1,8 +1,12 @@
 """Prompt templates for Claude API calls."""
 
-from .planning import PLAN_GENERATION_PROMPT, PLAN_REVISION_PROMPT
-from .reading import READING_INTRO_PROMPT, READING_GUIDE_PROMPT, READING_SYNTHESIS_PROMPT
 from .exercises import EXERCISES_PROMPT, SOLUTIONS_PROMPT
+from .planning import PLAN_GENERATION_PROMPT, PLAN_REVISION_PROMPT
+from .reading import (
+    READING_GUIDE_PROMPT,
+    READING_INTRO_PROMPT,
+    READING_SYNTHESIS_PROMPT,
+)
 
 __all__ = [
     "PLAN_GENERATION_PROMPT",

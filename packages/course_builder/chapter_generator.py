@@ -9,9 +9,9 @@ from typing import Optional
 from anthropic import Anthropic
 
 from .course_state import ChapterState, CourseState, save_course_state
-from .source_document import SourceDocument
 from .prompts.exercises import EXERCISES_PROMPT, SOLUTIONS_PROMPT
 from .prompts.reading import FULL_READING_PROMPT
+from .source_document import SourceDocument
 from .utils import validate_latex_formulas, write_markdown_file
 
 
@@ -26,7 +26,9 @@ class ChapterContent:
     summary: str
 
 
-def parse_section_reference(section_ref: str, source_document: SourceDocument) -> tuple[int, int]:
+def parse_section_reference(
+    section_ref: str, source_document: SourceDocument
+) -> tuple[int, int]:
     """
     Parse a section reference string into start and end indices.
 
@@ -63,7 +65,7 @@ def generate_reading_material(
     course_state: CourseState,
     source_document: SourceDocument,
     next_chapter_info: Optional[dict],
-    model: str = "claude-sonnet-4-20250514",
+    model: str = "claude-sonnet-4-5",
 ) -> str:
     """
     Generate reading material for a chapter.
@@ -81,7 +83,9 @@ def generate_reading_material(
         Generated reading material markdown
     """
     # Get section reference for this chapter
-    source_sections = chapter_info.get("source_sections", chapter_info.get("source_pages", "1-10"))
+    source_sections = chapter_info.get(
+        "source_sections", chapter_info.get("source_pages", "1-10")
+    )
     start_idx, end_idx = parse_section_reference(source_sections, source_document)
 
     # Get source content for the relevant sections
@@ -144,7 +148,7 @@ def generate_exercises(
     course_state: CourseState,
     source_document: SourceDocument,
     reading_content: str,
-    model: str = "claude-sonnet-4-20250514",
+    model: str = "claude-sonnet-4-5",
 ) -> str:
     """
     Generate exercises for a chapter.
@@ -162,7 +166,9 @@ def generate_exercises(
         Generated exercises markdown
     """
     # Get section reference for this chapter
-    source_sections = chapter_info.get("source_sections", chapter_info.get("source_pages", "1-10"))
+    source_sections = chapter_info.get(
+        "source_sections", chapter_info.get("source_pages", "1-10")
+    )
     start_idx, end_idx = parse_section_reference(source_sections, source_document)
 
     # Get source content (for reference to existing exercises)
@@ -196,7 +202,7 @@ def generate_solutions(
     chapter: ChapterState,
     course_state: CourseState,
     exercises_content: str,
-    model: str = "claude-sonnet-4-20250514",
+    model: str = "claude-sonnet-4-5",
 ) -> str:
     """
     Generate solutions for Claude-generated exercises.
@@ -230,7 +236,7 @@ def generate_solutions(
 def extract_key_concepts(
     client: Anthropic,
     reading_content: str,
-    model: str = "claude-sonnet-4-20250514",
+    model: str = "claude-sonnet-4-5",
 ) -> list[str]:
     """
     Extract key concepts from reading material for course state tracking.
@@ -276,7 +282,7 @@ Example output format:
 def generate_chapter_summary(
     client: Anthropic,
     reading_content: str,
-    model: str = "claude-sonnet-4-20250514",
+    model: str = "claude-sonnet-4-5",
 ) -> str:
     """
     Generate a brief summary of the chapter for course state tracking.
@@ -312,7 +318,7 @@ def generate_chapter(
     plan_chapters: list[dict],
     source_document: SourceDocument,
     output_dir: Path,
-    model: str = "claude-sonnet-4-20250514",
+    model: str = "claude-sonnet-4-5",
 ) -> ChapterContent:
     """
     Generate all content for a single chapter.
@@ -415,7 +421,7 @@ def generate_all_chapters(
     plan_chapters: list[dict],
     source_document: SourceDocument,
     output_dir: Path,
-    model: str = "claude-sonnet-4-20250514",
+    model: str = "claude-sonnet-4-5",
     progress_callback=None,
 ) -> list[ChapterContent]:
     """

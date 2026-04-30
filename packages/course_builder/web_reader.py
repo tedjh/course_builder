@@ -1,12 +1,12 @@
 """Webpage text extraction with section tracking capabilities."""
 
-import re
 from dataclasses import dataclass, field
 from typing import Optional
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urlparse
 
 import requests
-from bs4 import BeautifulSoup, NavigableString, Tag
+from bs4 import BeautifulSoup, Tag
+from bs4.element import NavigableString
 
 from .source_document import SectionContent, SourceDocument
 from .utils import sanitize_text
@@ -70,23 +70,17 @@ class WebDocument(SourceDocument):
 
     def get_full_text(self) -> str:
         """Get concatenated text from all sections."""
-        return "\n\n".join(
-            f"[{s.section_label}]\n{s.text}" for s in self._sections
-        )
+        return "\n\n".join(f"[{s.section_label}]\n{s.text}" for s in self._sections)
 
     def get_text_for_range(self, start_idx: int, end_idx: int) -> str:
         """Get concatenated text for a section range with markers."""
         sections = self.get_section_range(start_idx, end_idx)
-        return "\n\n".join(
-            f"[{s.section_label}]\n{s.text}" for s in sections
-        )
+        return "\n\n".join(f"[{s.section_label}]\n{s.text}" for s in sections)
 
     def get_summary_text(self, max_sections: int = 10) -> str:
         """Get a summary of the document for planning purposes."""
         summary_sections = self._sections[:max_sections]
-        return "\n\n".join(
-            f"[{s.section_label}]\n{s.text}" for s in summary_sections
-        )
+        return "\n\n".join(f"[{s.section_label}]\n{s.text}" for s in summary_sections)
 
     def get_section_reference(self, section: SectionContent) -> str:
         """Get a reference string for a section."""
@@ -230,7 +224,7 @@ def extract_webpage(url: str, timeout: int = 30) -> WebDocument:
     """
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-                      "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     }
 
     try:
@@ -260,21 +254,25 @@ def extract_webpage(url: str, timeout: int = 30) -> WebDocument:
     sections = []
     for section_id, heading, content in raw_sections:
         # Sanitize text to remove invalid Unicode characters
-        sections.append(SectionContent(
-            section_id=section_id,
-            section_label=sanitize_text(heading),
-            text=sanitize_text(content),
-        ))
+        sections.append(
+            SectionContent(
+                section_id=section_id,
+                section_label=sanitize_text(heading),
+                text=sanitize_text(content),
+            )
+        )
 
     # If no sections found, create one from all content
     if not sections:
         all_text = main_content.get_text(separator="\n", strip=True)
         if all_text:
-            sections.append(SectionContent(
-                section_id="section-0",
-                section_label="Content",
-                text=sanitize_text(all_text),
-            ))
+            sections.append(
+                SectionContent(
+                    section_id="section-0",
+                    section_label="Content",
+                    text=sanitize_text(all_text),
+                )
+            )
 
     return WebDocument(
         url=url,

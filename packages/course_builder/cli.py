@@ -52,12 +52,14 @@ def get_path_input(prompt: str, must_exist: bool = False) -> Path:
 def is_valid_url(url: str) -> bool:
     """Check if a string is a valid URL."""
     url_pattern = re.compile(
-        r'^https?://'  # http:// or https://
-        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'  # domain
-        r'localhost|'  # localhost
-        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # or IP
-        r'(?::\d+)?'  # optional port
-        r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+        r"^https?://"  # http:// or https://
+        r"(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|"  # domain
+        r"localhost|"  # localhost
+        r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})"  # or IP
+        r"(?::\d+)?"  # optional port
+        r"(?:/?|[/?]\S+)$",
+        re.IGNORECASE,
+    )
     return url_pattern.match(url) is not None
 
 
@@ -187,7 +189,7 @@ def plan_iteration_loop(
     client: Anthropic,
     plan: CoursePlan,
     learning_purpose: str,
-    model: str = "claude-sonnet-4-20250514",
+    model: str = "claude-sonnet-4-5",
 ) -> CoursePlan:
     """
     Allow user to iterate on the course plan until satisfied.
@@ -348,7 +350,7 @@ def generate_master_readme(
 
 def run_course_builder(
     api_key: Optional[str] = None,
-    model: str = "claude-sonnet-4-20250514",
+    model: str = "claude-sonnet-4-5",
 ) -> None:
     """
     Main entry point for the course builder CLI.
@@ -389,8 +391,7 @@ def run_course_builder(
             # Load source document
             print("\nLoading source material...")
             source_document = load_source_document(
-                course_state.source_type,
-                course_state.source_path
+                course_state.source_type, course_state.source_path
             )
             print(f"Loaded: {source_document.total_sections} sections")
 

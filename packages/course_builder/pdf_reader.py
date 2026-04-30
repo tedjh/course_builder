@@ -78,17 +78,13 @@ class PDFDocument(SourceDocument):
 
     def get_full_text(self) -> str:
         """Get concatenated text from all pages."""
-        return "\n\n".join(
-            f"[Page {s.section_id}]\n{s.text}" for s in self._sections
-        )
+        return "\n\n".join(f"[Page {s.section_id}]\n{s.text}" for s in self._sections)
 
     def get_text_for_range(self, start_idx: int, end_idx: int) -> str:
         """Get concatenated text for a section range with page markers."""
         # For PDFs, convert to 1-indexed page numbers for the method
         sections = self.get_section_range(start_idx, end_idx)
-        return "\n\n".join(
-            f"[Page {s.section_id}]\n{s.text}" for s in sections
-        )
+        return "\n\n".join(f"[Page {s.section_id}]\n{s.text}" for s in sections)
 
     def get_text_for_page_range(self, start: int, end: int) -> str:
         """Get concatenated text for a page range (1-indexed) with page markers."""
@@ -100,9 +96,7 @@ class PDFDocument(SourceDocument):
         Includes first few pages and table of contents if found.
         """
         summary_sections = self._sections[:max_sections]
-        return "\n\n".join(
-            f"[Page {s.section_id}]\n{s.text}" for s in summary_sections
-        )
+        return "\n\n".join(f"[Page {s.section_id}]\n{s.text}" for s in summary_sections)
 
     def get_section_reference(self, section: SectionContent) -> str:
         """Get a reference string for a page."""
@@ -144,11 +138,13 @@ def extract_pdf(pdf_path: Path) -> PDFDocument:
                 text = page.extract_text() or ""
                 # Sanitize text to remove invalid Unicode characters (surrogates)
                 text = sanitize_text(text.strip())
-                sections.append(SectionContent(
-                    section_id=str(i),
-                    section_label=f"Page {i}",
-                    text=text,
-                ))
+                sections.append(
+                    SectionContent(
+                        section_id=str(i),
+                        section_label=f"Page {i}",
+                        text=text,
+                    )
+                )
 
             # Try to extract title from metadata
             if pdf.metadata and pdf.metadata.get("Title"):

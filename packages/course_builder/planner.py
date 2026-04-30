@@ -8,12 +8,12 @@ from typing import Optional
 from anthropic import Anthropic
 
 from .course_state import ChapterState, CourseState
-from .source_document import SourceDocument
 from .prompts.planning import (
     PLAN_GENERATION_PROMPT,
     PLAN_REVISION_PROMPT,
     PLAN_TO_CHAPTERS_PROMPT,
 )
+from .source_document import SourceDocument
 
 
 @dataclass
@@ -29,7 +29,7 @@ def generate_plan(
     topic: str,
     learning_purpose: str,
     source_document: SourceDocument,
-    model: str = "claude-sonnet-4-20250514",
+    model: str = "claude-sonnet-4-5",
 ) -> CoursePlan:
     """
     Generate an initial course plan based on the topic and source content.
@@ -79,7 +79,7 @@ def revise_plan(
     current_plan: str,
     user_feedback: str,
     learning_purpose: str,
-    model: str = "claude-sonnet-4-20250514",
+    model: str = "claude-sonnet-4-5",
 ) -> CoursePlan:
     """
     Revise a course plan based on user feedback.
@@ -131,14 +131,16 @@ def parse_chapters_from_markdown(plan_content: str) -> list[dict]:
     matches = re.findall(chapter_pattern, plan_content, re.IGNORECASE)
 
     for number_str, title in matches:
-        chapters.append({
-            "number": int(number_str),
-            "title": title.strip(),
-            "description": "",
-            "source_sections": "1-10",
-            "dependencies": [],
-            "learning_objectives": [],
-        })
+        chapters.append(
+            {
+                "number": int(number_str),
+                "title": title.strip(),
+                "description": "",
+                "source_sections": "1-10",
+                "dependencies": [],
+                "learning_objectives": [],
+            }
+        )
 
     return chapters
 
@@ -146,7 +148,7 @@ def parse_chapters_from_markdown(plan_content: str) -> list[dict]:
 def parse_chapters_from_plan(
     client: Anthropic,
     plan_content: str,
-    model: str = "claude-sonnet-4-20250514",
+    model: str = "claude-sonnet-4-5",
 ) -> list[dict]:
     """
     Parse chapter information from plan markdown using Claude.

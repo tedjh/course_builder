@@ -18,7 +18,9 @@ def sanitize_text(text: str) -> str:
     invalid in UTF-8 and can cause encoding errors.
     """
     # Remove surrogate characters (U+D800 to U+DFFF)
-    return text.encode("utf-8", errors="surrogatepass").decode("utf-8", errors="replace")
+    return text.encode("utf-8", errors="surrogatepass").decode(
+        "utf-8", errors="replace"
+    )
 
 
 def write_markdown_file(path: Path, content: str) -> None:
