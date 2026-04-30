@@ -1,6 +1,8 @@
 # Course Builder
 
-Generate personalised learning courses from a PDF or webpage using Claude, then study them in a local web viewer.
+Generate personalised learning courses from a PDF or webpage using Claude, then study them in a local web viewer. 
+
+Full disclosure - this codebase was in large part written using Claude Code. Please only use build courses using resources that are open-access, or if you have the author's permission. 
 
 ## Overview
 
